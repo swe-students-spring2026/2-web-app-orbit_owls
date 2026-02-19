@@ -4,7 +4,7 @@ A little exercise to build a web application following an agile development proc
 
 ## Product vision statement
 
-See instructions. Delete this line and place the Product Vision Statement here.
+Sips is a New York City based app that allows users to discover, rate, and share honest reviews of nearby cafes, making it easy to find the perfect place to grab a drink nearby.
 
 ## User stories
 
