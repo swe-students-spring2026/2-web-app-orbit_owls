@@ -74,6 +74,11 @@ a.active {
   flex-direction: column;
   gap: 0.75rem;
 }
+.settings-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
 
 .result-card {
   background: #ffffff;
@@ -131,7 +136,7 @@ a.active {
   }
 }
 
-.form-container{
+.form-container {
   padding: 1rem;
 }
 
@@ -163,7 +168,9 @@ a.active {
   border: 1px solid #ddd;
   border-radius: 10px;
   outline: none;
-  transition: border 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border 0.2s ease,
+    box-shadow 0.2s ease;
   background: #fff;
 }
 
@@ -187,7 +194,7 @@ a.active {
 }
 
 .primary-btn:hover {
-  background-color: #4338ca; 
+  background-color: #4338ca;
 }
 
 .auth-link {
