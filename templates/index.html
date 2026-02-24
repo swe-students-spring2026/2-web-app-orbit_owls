@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Sips{% endblock %}
+
+{% block content %}
+<div class="welcome-container">
+
+  <div class="brand-section">
+    <div class="logo-icon">☕️</div>
+    <h1 class="app-name">Sips</h1>
+    <p class="tagline">Discover NYC's best cafes.<br>One sip at a time.</p>
+  </div>
+
+  <div class="action-section">
+    <a href="{{ url_for('signup') }}" class="btn btn-primary">Create an Account</a>
+    <p class="login-hint">
+      Already have an account?
+      <a href="{{ url_for('login') }}" class="login-link">Log In</a>
+    </p>
+  </div>
+
+</div>
+{% endblock %}

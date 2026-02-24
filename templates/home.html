@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}Home · Sips{% endblock %}
+
+{% block content %}
+<h1>Sips</h1>
+
+<div class="zipcode-search-container">
+  <input type="text" id="zip-search" name="search" placeholder="Enter a Zipcode:" />
+  <button type="submit" class="zip-submit">🔍</button>
+</div>
+
+<div class="map-container">
+  <iframe id="map"
+    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6590.223450075199!2d-73.99634979999999!3d40.7296453!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259906063567d%3A0xdb76a65c11d79969!2sStarbucks%20Coffee%20Company!5e1!3m2!1sen!2sus!4v1771736223336!5m2!1sen!2sus"
+    style="border:0;" allowfullscreen="" loading="lazy"
+    referrerpolicy="no-referrer-when-downgrade">
+  </iframe>
+</div>
+
+<div class="rec-message">Nearby Sips!</div>
+
+<div class="recommendations">
+  <div class="cafe-card">
+    <div class="cafe-name">Starbucks</div>
+    <div class="cafe-address">45 W 4th St, New York, NY 10003</div>
+    <img class="cafe-img" src="{{ url_for('static', filename='images/starbucks-card.jpg') }}" alt="Starbucks">
+  </div>
+
+  <div class="cafe-card">
+    <div class="cafe-name">Think Coffee</div>
+    <div class="cafe-address">248 Mercer St, New York, NY 10012</div>
+    <img class="cafe-img" src="{{ url_for('static', filename='images/think-coffee.jpg') }}" alt="Think Coffee">
+  </div>
+
+  <div class="cafe-card">
+    <div class="cafe-name">Peet's Coffee</div>
+    <div class="cafe-address">60 Washington Square S, New York, NY 10012</div>
+    <img class="cafe-img" src="{{ url_for('static', filename='images/peets.jpg') }}" alt="Peets">
+  </div>
+
+  <div class="cafe-card">
+    <div class="cafe-name">Blank Street Coffee</div>
+    <div class="cafe-address">688 Broadway, New York, NY 10012</div>
+    <img class="cafe-img" src="{{ url_for('static', filename='images/blank.png') }}" alt="Blank Street">
+  </div>
+</div>
+
+{% endblock %}

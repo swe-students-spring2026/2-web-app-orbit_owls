@@ -1,0 +1,15 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+flask = "*"
+pymongo = {extras = ["srv"], version = "*"}
+python-dotenv = "*"
+flask-login = "*"
+werkzeug = "*"
+dnspython = "*"
+
+[requires]
+python_version = "3.11"

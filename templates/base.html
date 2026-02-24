@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Sips{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+  </head>
+  <body>
+
+    {% block content %}{% endblock %}
+
+    {% if current_user.is_authenticated %}
+    <nav class="bottom-nav">
+      <a href="{{ url_for('home') }}"
+        {% if request.endpoint == 'home' %}class="active"{% endif %}>Home</a>
+      <a href="{{ url_for('search') }}"
+        {% if request.endpoint == 'search' %}class="active"{% endif %}>Search</a>
+      <a href="{{ url_for('saved_places') }}"
+        {% if request.endpoint == 'saved_places' %}class="active"{% endif %}>Saved</a>
+      <a href="{{ url_for('settings') }}"
+        {% if request.endpoint == 'settings' %}class="active"{% endif %}>Settings</a>
+    </nav>
+    {% endif %}
+
+  </body>
+</html>
