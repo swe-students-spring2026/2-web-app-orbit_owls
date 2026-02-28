@@ -35,13 +35,13 @@
             
         <div class="input-group">
             <label for="shop-location">Cafe Location</label>
-            <input type="text" id="shop-location" name="shop-location" placeholder="e.g. 123 Espresso St, Soho, NY">
+            <input type="text" id="shop-location" name="shop-location" value="{{ current_user.user_doc.get('shop_location', '') }}" placeholder="e.g. 123 Espresso St, Soho, NY">
             <span class="input-hint">This will be shown on your cafe's Sips page.</span>
         </div>
 
         <div class="input-group">
           <label for="shop-location">Operation Hours</label>
-          <input type="text" id="operation-hours" name="operation-hours" placeholder="e.g. Mon-Fri: 7AM - 5PM, Sat-Sun: 8AM - 6PM">
+          <input type="text" id="operation-hours" name="operation-hours" value="{{ current_user.user_doc.get('operation_hours', '') }}" placeholder="e.g. Mon-Fri: 7AM - 5PM, Sat-Sun: 8AM - 6PM">
           <span class="input-hint">Let customers know when they can grab a coffee.</span>
         </div>
 
