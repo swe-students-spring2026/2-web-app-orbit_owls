@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Settings{% endblock %}
+
+{% block content %}
+    <h1>Settings</h1>
+    <div class="settings-container">
+      <a href="{{url_for('profile')}}" class="card-link">
+        <div class="result-card">
+          <div class="result-title">Profile</div>
+        </div>
+      </a>
+
+      <div class="result-card">
+        <div class="result-title">My Reviews</div>
+      </div>
+
+      <a href="{{url_for('logout')}}" class="card-link">
+        <div class="result-card">
+          <div class="result-title">Logout</div>
+        </div>
+      </a>
+    </div>
+
+{% endblock %}

@@ -8,7 +8,7 @@ Sips is a New York City based app that allows users to discover, rate, and share
 
 ## User stories
 
-See instructions. Delete this line and place a link to the user stories here.
+[User Stories](https://github.com/swe-students-spring2026/2-web-app-orbit_owls/issues)
 
 ## Steps necessary to run the software
 
@@ -34,6 +34,4 @@ python app.py
 Go to `http://127.0.0.1:5000`
 
 ## Task boards
-
-See instructions. Delete this line and place a link to the task boards here.
-
+[Task Boards](https://github.com/orgs/swe-students-spring2026/projects/13)

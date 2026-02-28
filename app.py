@@ -47,6 +47,10 @@ class User(UserMixin):
     @property
     def email(self):
         return self.user_doc.get("email", "")
+    
+    @property
+    def role(self):
+        return self.user_doc.get("role", "customer")
 
 
 # called on every request to get the current user from the session
@@ -62,7 +66,11 @@ def load_user(user_id):
 # --- Splash screen ---
 @app.route("/")
 def index():
-    
+    """
+    Route for the index page
+    Returns:
+        rendered template (str): The rendered HTML template.
+    """
     if current_user.is_authenticated:
         return redirect(url_for("home"))
     return render_template("index.html")
@@ -71,9 +79,14 @@ def index():
 # --- Sign up ---
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
+    """
+    Route for the signup page
+    Returns:
+        rendered template (str): The rendered HTML template.
+    """
     if current_user.is_authenticated:
         return redirect(url_for("home"))
-
+    
     if request.method == "POST":
         username = request.form.get("username", "").strip()
         email    = request.form.get("email", "").strip().lower()
@@ -103,6 +116,7 @@ def signup():
             "email": email,
             "password_hash": generate_password_hash(password),
             "created_at": datetime.datetime.utcnow(),
+            "role": None
         }
         result = users_col.insert_one(new_user)
         new_user["_id"] = result.inserted_id
@@ -110,14 +124,38 @@ def signup():
         # log in right after signing up
         login_user(User(new_user))
         flash(f"Welcome to Sips, {username}!", "success")
-        return redirect(url_for("home"))
+        return redirect(url_for("select_role"))
+    
 
     return render_template("signup.html")
 
+@app.route("/select-role", methods=["GET", "POST"])
+@login_required
+def select_role():
+    """
+    Allow new users to choose if they are a customer or a shop owner.
+    """
+    if request.method == "POST":
+        role = request.form.get("role")
+
+        if role in ["customer", "owner"]:
+            users_col.update_one(
+                {"_id": ObjectId(current_user.get_id())}, 
+                {"$set": {"role": role}}
+            )
+            flash(f"Account set up as {role.capitalize()}!", "success")
+            return redirect(url_for("home"))
+
+    return render_template("select_role.html")
 
 # --- Log in ---
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    """
+    Route for the login page
+    Returns:
+        rendered template (str): The rendered HTML template.
+    """
     if current_user.is_authenticated:
         return redirect(url_for("home"))
 
@@ -180,6 +218,29 @@ def settings():
 @app.route("/profile", methods=["GET", "POST"])
 @login_required
 def profile():
+    if request.method == "POST":
+        username = request.form.get("username")
+        phone = request.form.get("phone")
+        
+        # update username and phone
+        update_fields = {
+            "username": username,
+            "phone": phone
+        }
+        
+        # if shop owner
+        if current_user.role == 'owner':
+            update_fields["shop_location"] = request.form.get("shop-location")
+            update_fields["operation_hours"] = request.form.get("operation-hours")
+            
+        # update database
+        users_col.update_one(
+            {"_id": ObjectId(current_user.get_id())},
+            {"$set": update_fields}
+        )
+        
+        flash("Profile updated successfully!", "success")
+        return redirect(url_for('settings')) 
     return render_template("profile.html")
 
 

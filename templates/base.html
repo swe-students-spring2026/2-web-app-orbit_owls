@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sips{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    
+    {% block styles %}{% endblock %}
+</head>
+<body>
+
+    <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    {% if current_user.is_authenticated and request.endpoint != 'index' %}
+    <nav class="bottom-nav">
+        <ul>
+            <li>
+                <a href="{{ url_for('home') }}" class="{{ 'active' if request.endpoint == 'home' }}">Home</a>
+            </li>
+            <li>
+                <a href="{{ url_for('search') }}" class="{{ 'active' if request.endpoint == 'search' }}">Search</a>
+            </li>
+            <li>
+                <a href="{{ url_for('saved_places') }}" class="{{ 'active' if request.endpoint == 'saved_places' }}">Saved</a>
+            </li>
+            <li>
+                <a href="{{ url_for('settings') }}" class="{{ 'active' if request.endpoint == 'settings' }}">Settings</a>
+            </li>
+        </ul>
+    </nav>
+    {% endif %}
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

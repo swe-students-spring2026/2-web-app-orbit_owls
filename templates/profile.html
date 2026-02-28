@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+    <h1>Profile</h1>
+
+    <div class="avatar-edit-section">
+      <div class="avatar-container">
+        <img src="{{url_for('static', filename='images/default_avatar.png') }}" alt="Avatar" class="avatar-img">
+      </div>
+      
+    </div>
+
+    <form action="{{ url_for('profile') }}" method="POST" class="profile-form">
+      <div class="input-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" value="{{ current_user.username }}" placeholder="username">
+      </div>
+      
+      <div class="input-group">
+        <label for="email">Email </label>
+        <input type="email" id="email" name="email" value="{{ current_user.email }}" placeholder="example@domain.com">
+        <span class="input-hint">Email cannot be changed for security.</span>
+      </div>
+      
+      <div class="input-group">
+        <label for="phone">Phone Number (Optional)</label>
+        <input type="tel" id="phone" name="phone" value="{{ current_user.user_doc.get('phone', '') }}" placeholder="(123) 456-7890">
+      </div>
+      
+      {% if current_user.role == 'owner' %}
+      <div class="shop-owner-section">
+        <h2>Shop Management</h2>
+            
+        <div class="input-group">
+            <label for="shop-location">Cafe Location</label>
+            <input type="text" id="shop-location" name="shop-location" value="{{ current_user.user_doc.get('shop_location', '') }}" placeholder="e.g. 123 Espresso St, Soho, NY">
+            <span class="input-hint">This will be shown on your cafe's Sips page.</span>
+        </div>
+
+        <div class="input-group">
+          <label for="shop-location">Operation Hours</label>
+          <input type="text" id="operation-hours" name="operation-hours" value="{{ current_user.user_doc.get('operation_hours', '') }}" placeholder="e.g. Mon-Fri: 7AM - 5PM, Sat-Sun: 8AM - 6PM">
+          <span class="input-hint">Let customers know when they can grab a coffee.</span>
+        </div>
+
+      </div>
+      {% endif %}
+      
+      <button type="submit" class="btn-save">Save Changes</button>
+    </form>
+
+{% endblock %}
