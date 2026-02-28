@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="onboarding-container">
+    <h2>Welcome! How will you use Sips?</h2>
+    
+    <form action="{{ url_for('select_role') }}" method="POST" class="role-options">
+        <div class="role-card">
+            <input type="radio" name="role" value="customer" id="cust" required>
+            <label for="cust">
+                <div class="icon">☕️</div>
+                <h3>I'm a Coffee Lover</h3>
+                <p>I want to find and save the best cafes.</p>
+            </label>
+        </div>
+
+        <div class="role-card">
+            <input type="radio" name="role" value="owner" id="own">
+            <label for="own">
+                <div class="icon">🏪</div>
+                <h3>I'm a Shop Owner</h3>
+                <p>I want to manage my cafe and reply to reviews.</p>
+            </label>
+        </div>
+
+        <button type="submit" class="primary-btn">Finish Setup</button>
+    </form>
+</div>
+{% endblock %}
