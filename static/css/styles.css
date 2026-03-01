@@ -54,6 +54,20 @@ a.active {
 .search-container {
   padding: 1rem;
 }
+.search-container form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.search-container button {
+  padding: 12px 10px;
+  border-radius: 10px;
+  border: none;
+  background: #4f46e5;
+  color: white;
+  font-size: 1em;
+  cursor: pointer;
+}
 
 #search {
   width: 100%;
@@ -108,8 +122,8 @@ a.active {
 
 /* map */
 .map-container {
-  max-width: 90%; 
-  margin: 0 auto;   
+  max-width: 90%;
+  margin: 0 auto;
   padding: 1rem;
   border-radius: 12px;
   border: 1px solid #eee;
@@ -131,9 +145,9 @@ a.active {
 
 /* zipcode search */
 .zipcode-search-container {
-  display: flex;       
-  gap: 0.5rem;          
-  margin: 0 auto; 
+  display: flex;
+  gap: 0.5rem;
+  margin: 0 auto;
   padding: 0.9rem 1rem;
   width: 90%;
   border-radius: 12px;
@@ -142,18 +156,20 @@ a.active {
 }
 
 #zip-search {
-  flex: 9;              
+  flex: 9;
   padding: 0.9rem 1rem;
   font-size: 1rem;
   border: 1px solid #ddd;
   border-radius: 10px;
   outline: none;
-  transition: border 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border 0.2s ease,
+    box-shadow 0.2s ease;
   background: #fff;
 }
 
 .zip-submit {
-  flex: 1;              
+  flex: 1;
   padding: 0.9rem 1rem;
   background-color: #4f46e5;
   color: white;
@@ -172,8 +188,8 @@ a.active {
 
 /* recommendations */
 
-.rec-message {             
-  margin: 0 auto; 
+.rec-message {
+  margin: 0 auto;
   padding: 0.9rem 1rem;
   width: 90%;
   font-size: 1.25rem;
@@ -185,8 +201,8 @@ a.active {
   grid-template-columns: repeat(auto-fill, minmax(45%, 1fr));
   gap: 1rem;
   padding: 1rem;
-  max-width: 90%; 
-  margin: 0 auto;   
+  max-width: 90%;
+  margin: 0 auto;
   padding: 1rem;
   border-radius: 12px;
   border: 1px solid #eee;
@@ -210,7 +226,7 @@ a.active {
     box-shadow 0.15s ease;
 }
 
-.cafe-card:hover{
+.cafe-card:hover {
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
   transform: translateY(-2px);
 }
@@ -267,7 +283,7 @@ a.active {
 }
 
 /* signin page */
-.form-container{
+.form-container {
   padding: 1rem;
 }
 
@@ -347,7 +363,6 @@ a.active {
   background: transparent;
 }
 
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -364,7 +379,6 @@ body {
 h1 {
   padding: 1.5rem 1rem;
 }
-
 
 ul {
   position: fixed;
@@ -401,7 +415,6 @@ a.active {
   font-weight: 600;
 }
 
-
 .search-container {
   padding: 1rem;
 }
@@ -413,10 +426,8 @@ a.active {
   border: 1px solid #ddd;
   border-radius: 10px;
   outline: none;
-  transition: border 0.2s ease, box-shadow 0.2s ease;
   background: #fff;
 }
-
 
 .result-card {
   background: #ffffff;
@@ -424,7 +435,9 @@ a.active {
   border-radius: 12px;
   border: 1px solid #eee;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .result-card:hover {
@@ -566,7 +579,9 @@ a.active {
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .secondary-btn:hover {
@@ -825,7 +840,6 @@ h1 {
   padding: 1.5rem 1rem;
 }
 
-
 ul {
   position: fixed;
   bottom: 0;
@@ -861,7 +875,6 @@ a.active {
   font-weight: 600;
 }
 
-
 .search-container {
   padding: 1rem;
 }
@@ -873,10 +886,11 @@ a.active {
   border: 1px solid #ddd;
   border-radius: 10px;
   outline: none;
-  transition: border 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border 0.2s ease,
+    box-shadow 0.2s ease;
   background: #fff;
 }
-
 
 .result-card {
   background: #ffffff;
@@ -884,7 +898,9 @@ a.active {
   border-radius: 12px;
   border: 1px solid #eee;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .result-card:hover {
@@ -1026,7 +1042,9 @@ a.active {
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .secondary-btn:hover {
@@ -1235,33 +1253,30 @@ a.active {
 }
 
 .avatar-container {
-  width: 120px;       
-  height: 120px;       
-  border-radius: 50%; 
-  overflow: hidden;  
-  
-  
-  border: 4px solid #fff; 
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
-  margin-bottom: 16px; 
-}
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
 
+  border: 4px solid #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 16px;
+}
 
 .avatar-img {
   width: 100%;
   height: 100%;
-  object-fit: cover;  
+  object-fit: cover;
 }
 
 .btn-change-photo {
   margin-top: 12px;
   background: none;
   border: none;
-  color: #d4a373; 
+  color: #d4a373;
   font-weight: 600;
   cursor: pointer;
 }
-
 
 .profile-form .input-group {
   margin-bottom: 20px;
@@ -1286,7 +1301,7 @@ a.active {
 
 .profile-form input:focus {
   outline: none;
-  border-color: #3e2723; 
+  border-color: #3e2723;
 }
 
 .input-hint {
@@ -1325,45 +1340,45 @@ a.active {
   width: 100%;
   text-decoration: none;
   color: inherit;
-  font-size: inherit; 
+  font-size: inherit;
 }
 
 .card-link .result-title {
-  font-size: 16px;  
-  font-weight: 600;  
+  font-size: 16px;
+  font-weight: 600;
 }
 
 /* Welcome page specific styles */
 
 .welcome-container {
-  min-height: 100vh; 
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: space-around; 
+  justify-content: space-around;
   align-items: center;
-  background-color: #fcfaf8; 
+  background-color: #fcfaf8;
   padding: 40px 24px;
   box-sizing: border-box;
   text-align: center;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
-
 
 .brand-section {
   margin-top: 20%;
 }
 
 .logo-icon {
-  font-size: 64px; 
+  font-size: 64px;
   margin-bottom: 16px;
 }
 
 .app-name {
   font-size: 42px;
   font-weight: 800;
-  color: #3e2723; 
+  color: #3e2723;
   margin: 0 0 12px 0;
-  letter-spacing: -1px; 
+  letter-spacing: -1px;
 }
 
 .tagline {
@@ -1375,7 +1390,7 @@ a.active {
 
 .action-section {
   width: 100%;
-  max-width: 320px; 
+  max-width: 320px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -1388,9 +1403,11 @@ a.active {
   border-radius: 12px;
   font-size: 18px;
   font-weight: bold;
-  text-decoration: none; 
+  text-decoration: none;
   text-align: center;
-  transition: transform 0.1s, opacity 0.2s;
+  transition:
+    transform 0.1s,
+    opacity 0.2s;
 }
 
 .btn-primary {
@@ -1403,7 +1420,6 @@ a.active {
   transform: scale(0.98);
 }
 
-
 .login-hint {
   font-size: 15px;
   color: #666;
@@ -1411,7 +1427,7 @@ a.active {
 }
 
 .login-link {
-  color: #d4a373; 
+  color: #d4a373;
   font-weight: bold;
   text-decoration: none;
 }
@@ -1427,11 +1443,11 @@ a.active {
   border-radius: 5px;
 }
 .alert-error {
-  background-color: #ffcccc; 
+  background-color: #ffcccc;
   color: #cc0000;
 }
 .alert-success {
-  background-color: #d4edda; 
+  background-color: #d4edda;
   color: #155724;
 }
 
@@ -1443,7 +1459,7 @@ a.active {
   min-height: calc(100vh - 70px);
   display: flex;
   flex-direction: column;
-  justify-content: center; 
+  justify-content: center;
 }
 
 h2 {
@@ -1477,7 +1493,7 @@ h2 {
 .role-card:hover {
   border-color: #5d5fef;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .role-card:has(input:checked) {
