@@ -197,10 +197,18 @@ def home():
     return render_template("home.html")
 
 
-@app.route("/search")
+@app.route("/search", methods=["GET"])
 @login_required
 def search():
-    return render_template("search.html")
+    query = request.args.get("q")
+    cafes = []
+
+    if query:
+        cafes = list(db.cafes.find({
+            "name": {"$regex": query, "$options": "i"}
+        }))
+
+    return render_template("search.html", cafes=cafes)
 
 
 @app.route("/cafe/<cafe_id>")
