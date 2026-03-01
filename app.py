@@ -194,14 +194,31 @@ def logout():
 @app.route("/home")
 @login_required
 def home():
-    cafes= list(cafes_col.find())
-    return render_template("home.html", cafes=cafes)
+    cafes = list(cafes_col.find())
+
+    selected_cafe = None
+    selected_id = request.args.get("selected")
+
+    if selected_id:
+        try:
+            selected_cafe = cafes_col.find_one({"_id": ObjectId(selected_id)})
+        except Exception:
+            selected_cafe = None
+    return render_template("home.html", cafes=cafes, selected_cafe=selected_cafe)
 
 
-@app.route("/search")
+@app.route("/search", methods=["GET"])
 @login_required
 def search():
-    return render_template("search.html")
+    query = request.args.get("q")
+    cafes = []
+
+    if query:
+        cafes = list(db.cafes.find({
+            "name": {"$regex": query, "$options": "i"}
+        }))
+
+    return render_template("search.html", cafes=cafes)
 
 # Cafe Indiv Pages
 @app.route("/cafe/<cafe_id>")
