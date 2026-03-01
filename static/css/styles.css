@@ -945,6 +945,13 @@ a.active {
   a:hover {
     background: #eef1ff;
   }
+
+  .cafe-preview {
+    bottom: 0;
+    border-radius: 16px;
+    margin-bottom: 1rem;
+    max-width: 760px;
+  }
 }
 
 .form-container {
@@ -1547,4 +1554,83 @@ h2 {
 
 .primary-btn:hover {
   background: #4749d4;
+}
+
+/* cafe preview styles */
+.cafe-preview {
+  position: fixed;
+  bottom: 60px;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  margin: 0 auto;
+  max-width: 680px;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.1);
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  animation: slideUp 0.2s ease;
+}
+
+@keyframes slideUp{
+  from  { transform: translateY(20px); opacity: 0;}
+  to    { transform: translateY(0);    opacity: 1;}
+}
+
+.cafe-preview_info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0
+}
+
+.cafe-preview_name {
+  font-weight: 700;
+  font-size: 1rem;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.cafe-preview_address {
+  font-size: 0.82rem;
+  color: #666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cafe-preview_meta {
+  font-size: 0.82rem;
+  color: #888;
+  margin-top: 0.1rem;
+}
+
+.cafe-preview_btn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.55rem 1rem;
+  background: #4f46e5;
+  color: #fff;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s ease, transform 0.15s ease;
+  height: fit-content;
+}
+
+.cafe-preview_btn:hover {
+  background: #4338ca;
+  transform: translateY(-1px);
+}
+
+.cafe-card--active {
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.25);
 }
