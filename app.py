@@ -194,7 +194,17 @@ def logout():
 @app.route("/home")
 @login_required
 def home():
-    return render_template("home.html")
+    cafes = list(cafes_col.find())
+
+    selected_cafe = None
+    selected_id = request.args.get("selected")
+
+    if selected_id:
+        try:
+            selected_cafe = cafes_col.find_one({"_id": ObjectId(selected_id)})
+        except Exception:
+            selected_cafe = None
+    return render_template("home.html", cafes=cafes, selected_cafe=selected_cafe)
 
 
 @app.route("/search")

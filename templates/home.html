@@ -11,35 +11,34 @@
     </div>
 
     <div class="map-container">
-      <iframe id="map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6590.223450075199!2d-73.99634979999999!3d40.7296453!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259906063567d%3A0xdb76a65c11d79969!2sStarbucks%20Coffee%20Company!5e1!3m2!1sen!2sus!4v1771736223336!5m2!1sen!2sus" 
+      <iframe id="map" src="{{ selected_cafe.map_src if selected_cafe else 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d94189.90723260397!2d-74.0518036300217!3d40.75903207520175!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c2588f046ee661%3A0xa0b3281fcecc08c!2sManhattan%2C%20New%20York%2C%20NY!5e1!3m2!1sen!2sus!4v1772381389632!5m2!1sen!2sus' }}" 
       style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
     </div>
 
 
     <div class="rec-message">Nearby Sips!</div>
     <div class="recommendations">
-      <a href="starbucks-screen.html" class="cafe-card">
-        <div class="cafe-name">Starbucks</div>
-        <div class="cafe-address">45 W 4th St, New York, NY 10003</div>
-        <img class="cafe-img" src="../images/starbucks-card.jpg" alt="Starbucks">
+      {% for cafe in cafes %}
+      <a href="{{ url_for('home', selected=cafe._id) }}" class="cafe-card {% if selected_cafe and selected_cafe._id == cafe._id %}cafe-card--active{% endif %}">
+        <div class="cafe-name">{{ cafe.name }}</div>
+        <div class="cafe-address">{{ cafe.address }}</div>
+        {% if cafe.photos and cafe.photos|length > 0 %}
+          <img class="cafe-img" src="{{ cafe.photos[0] }}" alt="{{ cafe.name }}">
+        {% endif %}
       </a>
-
-      <div class="cafe-card">
-        <div class="cafe-name">Think Coffee</div>
-        <div class="cafe-address">248 Mercer St, New York, NY 10012</div>
-        <img class="cafe-img" src="../images/think-coffee.jpg" alt="Think Coffee">
-      </div>
-
-      <div class="cafe-card">
-        <div class="cafe-name">Peet's Coffee</div>
-        <div class="cafe-address">60 Washington Square S, New York, NY 10012</div>
-        <img class="cafe-img" src="../images/peets.jpg" alt="Peets">
-      </div>
-
-      <div class="cafe-card">
-        <div class="cafe-name">Blank Street Coffee</div>
-        <div class="cafe-address">688 Broadway, New York, NY, 10012</div>
-        <img class="cafe-img" src="../images/blank.png" alt="Peets">
-      </div>
+      {% endfor %}
     </div>
+
+    {% if selected_cafe %}
+    <div class="cafe-preview">
+      <div class="cafe-preview_info">
+        <div class="cafe-preview_name">{{ selected_cafe.name }}</div>
+        <div class="cafe-preview_address">{{ selected_cafe.address }}</div>
+        {% if selected_cafe.rating %}
+        <div class="cafe-preview_meta">⭐ {{ selected_cafe.rating }} &nbsp;·&nbsp; {{ selected_cafe.price_range }}</div>
+        {% endif %}
+      </div>
+      <a href="{{ url_for('cafe_detail', cafe_id=selected_cafe._id) }}" class="cafe-preview_btn">More Info →</a>
+    </div>
+    {% endif %}
 {% endblock %}
