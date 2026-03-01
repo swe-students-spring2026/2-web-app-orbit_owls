@@ -4,29 +4,29 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Café Details</title>
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
   </head>
 
   <body>
     <main class="settings-container">
       <section class="hero">
         <img
-          src="https://media.istockphoto.com/id/900816038/photo/staff-working-behind-counter-in-busy-coffee-shop.jpg?s=1024x1024&w=is&k=20&c=TFCP6CHi9IY7mXVKCZCXXz2V6yaYYZhvQ9KiWDgtOAU="
-          alt="Photo of the cafe"
+        src="{{ cafe.photos[0] if cafe.photos and cafe.photos|length > 0 else url_for('static', filename='images/coffee.jpg') }}"
+        alt="{{ cafe.name }}"
         />
         <div class="hero-caption">
           <div class="hero-title-row">
             <div>
-              <h1>Example  Café</h1>
-              <p class="sub">123 Broadway, New York, NY • 0.4 mi away</p>
+              <h1>{{ cafe.name}}</h1>
+              <p class="sub">{{ cafe.address}}</p>
             </div>
-            <div class="badge primary" title="Average rating">★ 4.6</div>
+            <div class="badge primary" title="Average rating">{{cafe.rating}}</div>
           </div>
 
           <div class="badge-row">
-            <span class="badge">218 reviews</span>
-            <span class="badge">$$ (Moderate)</span>
-            <span class="badge">Open • 7:00 AM – 7:00 PM</span>
+            <span class="badge">{{reviews|length}} reviews</span>
+            <span class="badge">{{cafe.price_range}}</span>
+            <span class="badge">{{cafe.hours}}</span>
           </div>
 
           <div class="btn-row">
@@ -39,18 +39,13 @@
       <section class="result-card">
         <div class="section-title">Photos</div>
         <div class="gallery">
-          <img
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQq1kMN5TMuln0qyn7S7xDgtg81veP9qQlG1A&s"
-            alt="Interior photo 1"
-          />
-          <img
-            src="https://media.istockphoto.com/id/1453049066/photo/female-barista-pouring-milk-to-make-a-cup-of-cappuccino-coffee-in-a-coffee-shop.jpg?s=612x612&w=0&k=20&c=ypsLE1dki1V3q-RXNqvB6GxRsC3gA9Pj4n1GHzTCcpo="
-            alt="Drink photo 1"
-          />
-          <img
-            src="https://media.istockphoto.com/id/508858458/photo/interior-of-coffee-shop-with-customers-using-digital-devices.jpg?s=612x612&w=0&k=20&c=YLCEYj4aPlJgU9upJucZ6z7kCSxc7CatEn34E37O4Sw="
-            alt="Interior photo 2"
-          />
+         {% for url in cafe.photos %}
+         <img src="{{url}}"
+         alt ="Cafe photo {{loop.index}}"
+         />
+         {% else %}
+         <p class="muted"> No photos yet.</p>
+         {% endfor %}
         </div>
         <button class="secondary-btn" type="button" style="margin-top: 0.85rem;">
           Upload a photo
@@ -64,32 +59,36 @@
         <div class="section-title">Café info</div>
         <div class="info-grid">
           <div class="info-row">
-            <div class="label">Price range</div>
-            <div class="value">$$ (Moderate)</div>
+            <div class="label">Price Range</div>
+            <div class="value">{{cafe.price_range}}</div>
           </div>
           <div class="info-row">
             <div class="label">Hours</div>
-            <div class="value">Mon–Fri 7–7 • Sat–Sun 8–6</div>
+            <div class="value">{{cafe.hours}}</div>
           </div>
           <div class="info-row">
             <div class="label">Address</div>
-            <div class="value">123 Broadway, New York, NY</div>
+            <div class="value">{{cafe.address}}</div>
           </div>
           <div class="info-row">
             <div class="label">Amenities</div>
-            <div class="value">Wi-Fi • Outlets • Seating • Bathroom</div>
+            <div class="value">
+              {% for a in cafe.amenities %}
+              {{a}}{% if not loop.last %} • {% endif %}
+            {% else %}
+              <span class="muted">None listed</span>
+            {% endfor %}
+          </div>
           </div>
           <div class="info-row">
             <div class="label">Popular</div>
-            <div class="value">Iced latte • Oat cappuccino • Muffins</div>
+            <div class="value">{% for item in cafe.popular %}
+              {{item}}{% if not loop.last %} •{% endif %}
+            {% else %}
+              <span class="muted">None listed</span>
+            {% endfor %}
           </div>
-        </div>
-
-        <div style="margin-top: 0.85rem;">
-          <button class="secondary-btn" type="button">Owner: Edit shop details</button>
-          <p class="muted" style="margin-top: 0.5rem;">
-            (Owner feature) Update hours, menu, location, and photos.
-          </p>
+          </div>
         </div>
       </section>
 
@@ -157,77 +156,96 @@
       </section>
       
       <section class="result-card">
-        <div class="section-title">Reviews</div>
- 
-        <button class="primary-btn" type="button">Write a review</button>
+        <form method="POST"
+        action="{{ url_for('add_review', cafe_id=cafe._id) }}"
+        style="margin-bottom: 1rem;">
+
+        <label class="label">Rating (1–5)</label>
+        <input type="number"
+           name="rating"
+           min="1"
+           max="5"
+           required
+           class="input-field" />
+
+        <label class="label" style="margin-top: 0.5rem;">Your review</label>
+        <textarea name="text"
+              rows="3"
+              required
+              class="input-field"></textarea>
+
+         <button type="submit"
+            class="primary-btn"
+            style="margin-top: 0.75rem;">
+      Post review
+    </button>
+  </form>
+
         
+        {% for r in reviews %}
         <div class="result-card" style="margin-top: 0.85rem;">
           <div class="review">
             <div class="review-head">
               <div>
-                <span class="reviewer">You</span>
-                <span class="review-date">Feb 22, 2026</span>
+                <span class="reviewer">{{r.username}}</span>
+                <span class="review-date">
+                  {{r.created_at.strftime("%b %d, %Y") if r.created_at else "" }}
+                </span>
               </div>
-              <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
-            </div>
-            <p class="review-text">
-              Great place for studying. Plenty of outlets and the iced latte was to die for.
-            </p>
-            <div class="review-actions">
-              <button class="mini-btn" type="button">Edit</button>
-              <button class="mini-btn" type="button">Delete</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="result-card" style="margin-top: 0.85rem;">
-          <div class="review">
-            <div class="review-head">
-              <div>
-                <span class="reviewer">Customer One</span>
-                <span class="review-date">Jan 29, 2026</span>
+              <div class="stars" aria-label="{{r.rating}} out of 5 stars">
+                {{ "★" * r.rating }}{{ "☆" * (5 - r.rating) }}
               </div>
-              <div class="stars" aria-label="4 out of 5 stars">★★★★☆</div>
             </div>
-            <p class="review-text">
-              Friendly staff and great pastries. It can get crowded mid-morning.
-            </p>
-
-            <div class="owner-reply">
-              <div class="muted" style="font-weight: 700;">Owner reply</div>
-              <textarea
-                class="input-field"
-                rows="3"
-                placeholder="Reply to this review (owner only)…"
-              ></textarea>
-              <button class="primary-btn" type="button">Post reply</button>
-              <p class="muted">(Owner feature) Can reply to customer reviews.</p>
-            </div>
+            <p class="review-text">{{ r.text }}</p>
+            {% if r.user_id_str == current_user_id %}
+            <div style="margin-top: 0.5rem; display:flex; gap:0.5rem; align-items:center;">
+    
+            <form method="POST" action="{{ url_for('delete_review', review_id=r._id) }}" style="display:inline;">
+              <button class="secondary-btn" type="submit">Delete</button>
+            </form>
+    
+           
+            <details>
+              <summary class="secondary-btn" style="cursor:pointer; list-style:none;">
+                  Edit
+              </summary>
+    
+              <form method="POST" action="{{ url_for('edit_review', review_id=r._id) }}" style="margin-top:0.5rem;">
+                <label class="label">Rating (1–5)</label>
+                <input class="input-field" type="number" name="rating" min="1" max="5" value="{{ r.rating }}" required>
+    
+                <label class="label" style="margin-top:0.5rem;">Edit review</label>
+                <textarea class="input-field" name="text" rows="3" required>{{ r.text }}</textarea>
+    
+                <button class="primary-btn" type="submit" style="margin-top:0.5rem;">Save</button>
+               </form>
+            </details>
+    
           </div>
-        </div>
+          {% endif %}
+       </div>
+    </div>
+    {% else %}
+      <p class="muted">No reviews yet. Be the first to write one!</p>
+    {% endfor %}
 
-        <div class="result-card" style="margin-top: 0.85rem;">
-          <div class="review">
-            <div class="review-head">
-              <div>
-                <span class="reviewer">Customer Two</span>
-                <span class="review-date">Jan 10, 2026</span>
-              </div>
-              <div class="stars" aria-label="3 out of 5 stars">★★★☆☆</div>
-            </div>
-            <p class="review-text">
-              Coffee is good but music can be loud. Still a nice spot.
-            </p>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <ul>
-      <li><a href="#" class="active">Home</a></li>
-      <li><a href="#">Search</a></li>
-      <li><a href="#">Saved</a></li>
-      <li><a href="#">Profile</a></li>
-    </ul>
+    {% if current_user.is_authenticated and request.endpoint != 'index' %}
+    <nav class="bottom-nav">
+        <ul>
+            <li>
+                <a href="{{ url_for('home') }}" class="{{ 'active' if request.endpoint == 'home' }}">Home</a>
+            </li>
+            <li>
+                <a href="{{ url_for('search') }}" class="{{ 'active' if request.endpoint == 'search' }}">Search</a>
+            </li>
+            <li>
+                <a href="{{ url_for('saved_places') }}" class="{{ 'active' if request.endpoint == 'saved_places' }}">Saved</a>
+            </li>
+            <li>
+                <a href="{{ url_for('settings') }}" class="{{ 'active' if request.endpoint == 'settings' }}">Settings</a>
+            </li>
+        </ul>
+    </nav>
+    {% endif %}
   </body>
 </html>
