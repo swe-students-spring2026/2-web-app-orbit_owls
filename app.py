@@ -220,11 +220,143 @@ def search():
 
     return render_template("search.html", cafes=cafes)
 
-
+# Cafe Indiv Pages
 @app.route("/cafe/<cafe_id>")
 @login_required
 def cafe_detail(cafe_id):
-    return render_template("indiv_cafe.html")
+    try: 
+        cafe= cafes_col.find_one({"_id": ObjectId(cafe_id)})
+    except Exception:
+        flash("Invalid cafe link.", "error")
+        return redirect(url_for("home"))
+
+    if not cafe:
+        flash("Cafe not found.", "error")
+        return redirect(url_for("home"))
+    reviews= list(reviews_col.find({"cafe_id": cafe["_id"]}))
+
+    for r in reviews:
+        r["user_id_str"]= str(r.get("user_id"))
+
+    current_user_id = str(current_user.get_id())
+    return render_template(
+        "indiv-cafe-screen.html",
+        cafe=cafe, 
+        reviews=reviews,
+        current_user_id=current_user_id
+    )
+
+#Posting reviews
+@app.route("/cafe/<cafe_id>/review", methods=["POST"])
+@login_required
+def add_review(cafe_id):
+    try:
+        cafe_obj_id= ObjectId(cafe_id)
+    except Exception:
+        flash("Invalid cafe link.","error")
+        return redirect(url_for("home"))
+
+    cafe= cafes_col.find_one({"_id": cafe_obj_id})
+    if not cafe:
+        flash("Cafe not found.", "error")
+        return redirect(url_for("home"))
+
+    rating_str= request.form.get("rating", "").strip()
+    text= request.form.get("text", "").strip()
+
+    if not rating_str.isdigit():
+        flash("Rating must be a number from 1 to 5.", "error")
+        return redirect(url_for("cafe_detail", cafe_id=cafe_id))
+
+    rating = int(rating_str)
+    if rating < 1 or rating > 5:
+        flash("Rating must be between 1 and 5.", "error")
+        return redirect(url_for("cafe_detail", cafe_id=cafe_id))
+
+    if not text:
+        flash("Review text cannot be empty.", "error")
+        return redirect(url_for("cafe_detail", cafe_id=cafe_id))
+
+    reviews_col.insert_one({
+        "cafe_id": cafe_obj_id,
+        "user_id": ObjectId(current_user.get_id()),
+        "username": current_user.username,
+        "rating": rating,
+        "text": text,
+        "created_at": datetime.datetime.utcnow()
+    })
+
+    flash("Review posted!", "success")
+    return redirect(url_for("cafe_detail", cafe_id=cafe_id))
+
+#Deleting reviews 
+@app.route("/review/<review_id>/delete", methods=["POST"])
+@login_required
+def delete_review(review_id):
+    try:
+        rid= ObjectId(review_id)
+    except Exception:
+        flash("Invalid review.", "error")
+        return redirect(url_for("home"))
+
+    review= reviews_col.find_one({"_id":rid})
+    if not review:
+        flash("Review not found.", "error")
+        return redirect(url_for("home"))
+
+    # Only author can delete
+    if str(review.get("user_id")) != str(current_user.get_id()):
+        flash("You can only delete your own review.", "error")
+        return redirect(url_for("cafe_detail", cafe_id=str(review["cafe_id"])))
+
+    reviews_col.delete_one({"_id":rid})
+    flash("Review deleted.", "success")
+    return redirect(url_for("cafe_detail", cafe_id=str(review["cafe_id"])))
+
+#Edit reviews 
+@app.route("/review/<review_id>/edit", methods=["POST"])
+@login_required
+def edit_review(review_id):
+    try:
+        rid= ObjectId(review_id)
+    except Exception:
+        flash("Invalid review.", "error")
+        return redirect(url_for("home"))
+
+    review = reviews_col.find_one({"_id":rid})
+    if not review:
+        flash("Review not found.", "error")
+        return redirect(url_for("home"))
+
+    #Only author can make edits
+    if str(review.get("user_id"))!= str(current_user.get_id()):
+        flash("You can only edit your own review.", "error")
+        return redirect(url_for("cafe_detail", cafe_id=str(review["cafe_id"])))
+
+    #Get new values 
+    rating_str= request.form.get("rating", "").strip()
+    text= request.form.get("text", "").strip()
+
+    # Validate rating
+    if not rating_str.isdigit():
+        flash("Rating must be a number 1–5.", "error")
+        return redirect(url_for("cafe_detail", cafe_id=str(review["cafe_id"])))
+    rating = int(rating_str)
+    if rating < 1 or rating > 5:
+        flash("Rating must be between 1 and 5.", "error")
+        return redirect(url_for("cafe_detail", cafe_id=str(review["cafe_id"])))
+    if not text:
+        flash("Review text cannot be empty.", "error")
+        return redirect(url_for("cafe_detail", cafe_id=str(review["cafe_id"])))
+
+    # Update 
+    reviews_col.update_one(
+        {"_id": rid},
+        {"$set": {"rating": rating, "text": text}}
+    )
+
+    flash("Review updated.", "success")
+    return redirect(url_for("cafe_detail", cafe_id=str(review["cafe_id"])))
 
 
 @app.route("/settings")
