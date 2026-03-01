@@ -1,32 +1,37 @@
-{% extends "base.html" %} {% block title %}Search{% endblock %} {% block content
-%}
-<h1>Search</h1>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sips</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <h1>Search</h1>
 
-<div class="search-container">
-  <form method="GET" action="{{ url_for('search') }}">
-    <input
-      type="text"
-      id="search"
-      name="q"
-      placeholder="Find a cafe:"
-      value="{{ request.args.get('q', '') }}"
-      required
-    />
-    <button type="submit">Search</button>
-  </form>
+    <div class="search-container">
+      <input type="text" id="search" name="search" placeholder="Find a cafe:" />
 
-  <div class="search-results">
-    {% if cafes %} {% for cafe in cafes %}
-    <div class="result-card">
-      <div class="result-title">{{ cafe.name }}</div>
-      <div class="result-meta">
-        {{ cafe.hours }} • Rating: {{ cafe.rating }}
+      <div class="search-results">
+        <a href="starbucks-screen.html" class="card-link">
+          <div class="result-card">
+            <div class="result-title">Starbucks</div>
+            <div class="result-meta">Open • 7:00 AM – 8:00 PM</div>
+          </div>
+        </a>
+
+        <div class="result-card">
+          <div class="result-title">Think Coffee</div>
+          <div class="result-meta">Open • 7:00 AM – 8:00 PM</div>
+        </div>
       </div>
     </div>
-    {% endfor %} {% elif request.args.get('q') %}
-    <p>No cafes found.</p>
-    {% endif %}
-  </div>
-</div>
 
-{% endblock %}
+    <ul>
+      <li><a href="home.html">Home</a></li>
+      <li><a href="search.html" class="active">Search</a></li>
+      <li><a href="saved-places.html">Saved Places</a></li>
+      <li><a href="settings.html">Settings</a></li>
+    </ul>
+  </body>
+</html>
