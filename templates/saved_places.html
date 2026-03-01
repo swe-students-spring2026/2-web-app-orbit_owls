@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Saved Places · Sips{% endblock %}
+
+{% block content %}
+<h1>Saved Places</h1>
+
+<div class="search-container">
+  <form method="GET" action="{{ url_for('saved_places') }}">
+    <input
+      type="text"
+      name="q"
+      class="search-input"
+      placeholder="Search saved cafes"
+      value="{{ query }}"
+    />
+    <button type="submit" class="zip-submit">🔍</button>
+  </form>
+</div>
+
+{% if saved %}
+  {% for place in saved %}
+  <div class="card">
+    <a href="{{ url_for('cafe_detail', cafe_id=place.cafe_id) }}" class="card-link">
+      <div class="result-title">{{ place.cafe_name }}</div>
+      {% if place.neighborhood %}
+        <div class="result-meta">{{ place.neighborhood }}</div>
+      {% endif %}
+      {% if place.hours %}
+        <div class="result-meta">{{ place.hours }}</div>
+      {% endif %}
+    </a>
+    <form method="POST" action="{{ url_for('unsave_cafe', place_id=place._id) }}">
+      <button type="submit" class="secondary-btn">Remove</button>
+    </form>
+  </div>
+  {% endfor %}
+
+{% else %}
+  {% if query %}
+    <p style="padding: 1rem;">No saved cafes match "{{ query }}".</p>
+  {% else %}
+    <p style="padding: 1rem;">You haven't saved any cafes yet. <a href="{{ url_for('home') }}">Explore cafes</a></p>
+  {% endif %}
+{% endif %}
+
+{% endblock %}
