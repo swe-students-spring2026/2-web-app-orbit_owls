@@ -265,7 +265,58 @@ def profile():
 @app.route("/saved")
 @login_required
 def saved_places():
-    return render_template("saved_places.html")
+    user_id = current_user.get_id()
+    query = request.args.get("q", "").strip()
+
+    db_filter = {"user_id": user_id}
+    if query:
+        db_filter["cafe_name"] = {"$regex": query, "$options": "i"}
+
+    saved = list(saved_col.find(db_filter).sort("saved_at", pymongo.DESCENDING))
+    for place in saved:
+        place["_id"] = str(place["_id"])
+
+    return render_template("saved_places.html", saved=saved, query=query)
+
+
+@app.route("/saved/add/<cafe_id>", methods=["POST"])
+@login_required
+def save_cafe(cafe_id):
+    user_id = current_user.get_id()
+
+    if saved_col.find_one({"user_id": user_id, "cafe_id": cafe_id}):
+        flash("Cafe is already in your saved places.", "info")
+        return redirect(request.referrer or url_for("saved_places"))
+
+    cafe = cafes_col.find_one({"_id": ObjectId(cafe_id)})
+    cafe_name    = cafe["name"]                 if cafe else "Unknown Cafe"
+    neighborhood = cafe.get("neighborhood", "") if cafe else ""
+    hours        = cafe.get("hours", "")        if cafe else ""
+
+    saved_col.insert_one({
+        "user_id":      user_id,
+        "cafe_id":      cafe_id,
+        "cafe_name":    cafe_name,
+        "neighborhood": neighborhood,
+        "hours":        hours,
+        "saved_at":     datetime.datetime.utcnow(),
+    })
+
+    flash(f"{cafe_name} added to saved places!", "success")
+    return redirect(request.referrer or url_for("saved_places"))
+
+
+@app.route("/saved/remove/<place_id>", methods=["POST"])
+@login_required
+def unsave_cafe(place_id):
+    user_id = current_user.get_id()
+    result  = saved_col.delete_one({"_id": ObjectId(place_id), "user_id": user_id})
+
+    flash(
+        "Cafe removed from saved places." if result.deleted_count else "Could not remove that cafe.",
+        "success" if result.deleted_count else "error"
+    )
+    return redirect(url_for("saved_places"))
 
 
 # --- Run app ---
