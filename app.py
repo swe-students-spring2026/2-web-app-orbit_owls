@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 from flask import Flask, flash, redirect, render_template, request, url_for
 from flask_login import LoginManager, UserMixin, current_user, login_required, login_user, logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
+from pymongo import ASCENDING,DESCENDING
 
 # load .env file and create the app
 load_dotenv()
@@ -211,12 +212,41 @@ def home():
 @login_required
 def search():
     query = request.args.get("q")
-    cafes = []
+    min_rating = request.args.get("min_rating")
+    price = request.args.get("price")
+    sort_by = request.args.get("sort_by")
 
+    filters = {}
+
+    #normal search 
     if query:
-        cafes = list(db.cafes.find({
-            "name": {"$regex": query, "$options": "i"}
-        }))
+        filters["name"] = {"$regex": query, "$options": "i"}
+
+    # rating filter 
+    if min_rating:
+        filters["rating"] = {"$gte": float(min_rating)}
+
+    # price filter
+    if price:
+        filters["price"] = price
+
+    cafes_query = db.cafes.find(filters)
+
+    # sort
+    if sort_by == "rating_desc":
+        cafes_query = cafes_query.sort("rating", DESCENDING)
+    elif sort_by == "rating_asc":
+        cafes_query = cafes_query.sort("rating", ASCENDING)
+    elif sort_by == "name_asc":
+        cafes_query = cafes_query.sort("name", ASCENDING)
+    elif sort_by == "name_desc":
+        cafes_query = cafes_query.sort("name", DESCENDING)
+    elif sort_by == "price_asc":
+        cafes_query = cafes_query.sort("price", ASCENDING)
+    elif sort_by == "price_desc":
+        cafes_query = cafes_query.sort("price", DESCENDING)
+
+    cafes = list(cafes_query)
 
     return render_template("search.html", cafes=cafes)
 
