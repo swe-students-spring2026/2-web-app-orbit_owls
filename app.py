@@ -213,7 +213,7 @@ def home():
 def search():
     query = request.args.get("q")
     min_rating = request.args.get("min_rating")
-    price = request.args.get("price")
+    price = request.args.get("price_range")
     sort_by = request.args.get("sort_by")
 
     filters = {}
@@ -228,7 +228,7 @@ def search():
 
     # price filter
     if price:
-        filters["price"] = price
+        filters["price_range"] = price
 
     cafes_query = db.cafes.find(filters)
 
@@ -242,9 +242,9 @@ def search():
     elif sort_by == "name_desc":
         cafes_query = cafes_query.sort("name", DESCENDING)
     elif sort_by == "price_asc":
-        cafes_query = cafes_query.sort("price", ASCENDING)
+        cafes_query = cafes_query.sort("price_range", ASCENDING)
     elif sort_by == "price_desc":
-        cafes_query = cafes_query.sort("price", DESCENDING)
+        cafes_query = cafes_query.sort("price_range", DESCENDING)
 
     cafes = list(cafes_query)
 

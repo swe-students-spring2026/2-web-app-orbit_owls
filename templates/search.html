@@ -19,7 +19,7 @@
       <option value="4.5" {% if request.args.get('min_rating') == '4.5' %}selected{% endif %}>4.5+</option>
     </select>
 
-    <select name="price">
+    <select name="price_range">
       <option value="">$-$$$</option>
       <option value="$" {% if request.args.get('price') == '$' %}selected{% endif %}>$</option>
       <option value="$$" {% if request.args.get('price') == '$$' %}selected{% endif %}>$$</option>
