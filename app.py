@@ -205,7 +205,17 @@ def home():
             selected_cafe = cafes_col.find_one({"_id": ObjectId(selected_id)})
         except Exception:
             selected_cafe = None
-    return render_template("home.html", cafes=cafes, selected_cafe=selected_cafe)
+
+    grouped = {}
+    for cafe in cafes:
+        address = cafe.get("address", "")
+        parts = address.split()
+        zip_code = parts[-1] if parts else "Other"
+        if zip_code not in grouped:
+            grouped[zip_code] = []
+        grouped[zip_code].append(cafe)
+
+    return render_template("home.html", grouped=grouped, selected_cafe=selected_cafe)
 
 
 @app.route("/search", methods=["GET"])
