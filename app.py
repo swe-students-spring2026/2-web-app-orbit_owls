@@ -408,6 +408,12 @@ def settings():
 @app.route("/profile", methods=["GET", "POST"])
 @login_required
 def profile():
+    # get the user doc
+    user_data = users_col.find_one({"_id": ObjectId(current_user.get_id())})
+    op_hours = user_data.get('operation_hours')
+    if not isinstance(op_hours, dict):
+        op_hours = {} # make operation hours dict if it was str before
+
     if request.method == "POST":
         username = request.form.get("username")
         phone = request.form.get("phone")
@@ -420,8 +426,22 @@ def profile():
         
         # if shop owner
         if current_user.role == 'owner':
-            update_fields["shop_location"] = request.form.get("shop-location")
-            update_fields["operation_hours"] = request.form.get("operation-hours")
+            days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
+
+            op_hours = {day: request.form.get(f'hours_{day}') for day in days}
+            amenities_raw = request.form.get("amenities", "")
+            popular_raw = request.form.get("popular", "")
+
+            amenities_list = [item.strip() for item in amenities_raw.split(",") if item.strip()]
+            popular_list = [item.strip() for item in popular_raw.split(",") if item.strip()]
+
+            update_fields.update({
+                "cafe_name": request.form.get("cafe_name"),
+                "shop_location": request.form.get("shop_location"),
+                "operation_hours": op_hours,
+                "amenities": amenities_list,
+                "popular": popular_list
+            })
             
         # update database
         users_col.update_one(
@@ -431,7 +451,7 @@ def profile():
         
         flash("Profile updated successfully!", "success")
         return redirect(url_for('settings')) 
-    return render_template("profile.html")
+    return render_template("profile.html", op_hours=op_hours)
 
 
 @app.route("/saved")

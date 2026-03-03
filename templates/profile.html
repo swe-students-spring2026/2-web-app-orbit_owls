@@ -3,6 +3,7 @@
 {% block title %}Profile{% endblock %}
 
 {% block content %}
+<div class="profile-container">
     <h1>Profile</h1>
 
     <div class="avatar-edit-section">
@@ -32,17 +33,43 @@
       {% if current_user.role == 'owner' %}
       <div class="shop-owner-section">
         <h2>Shop Management</h2>
-            
+        
         <div class="input-group">
-            <label for="shop-location">Cafe Location</label>
-            <input type="text" id="shop-location" name="shop-location" value="{{ current_user.user_doc.get('shop_location', '') }}" placeholder="e.g. 123 Espresso St, Soho, NY">
-            <span class="input-hint">This will be shown on your cafe's Sips page.</span>
+          <label>Cafe Name</label>
+          <input type="text" name="cafe_name" value="{{ current_user.user_doc.get('cafe_name', '') }}" placeholder="Drip Drop Cafe">
         </div>
 
         <div class="input-group">
-          <label for="shop-location">Operation Hours</label>
-          <input type="text" id="operation-hours" name="operation-hours" value="{{ current_user.user_doc.get('operation_hours', '') }}" placeholder="e.g. Mon-Fri: 7AM - 5PM, Sat-Sun: 8AM - 6PM">
-          <span class="input-hint">Let customers know when they can grab a coffee.</span>
+            <label for="shop-location">Cafe Location</label>
+            <input type="text" id="shop-location" name="shop_location" value="{{ current_user.user_doc.get('shop_location', '') }}" placeholder="e.g. 123 Espresso St, Soho, NY">
+            <span class="input-hint">This will be shown on your cafe's Sips page.</span>
+        </div>
+
+        <label class="label">Operation Hours (Weekly)</label>
+        <div class="hours-grid">
+            {% for day in ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] %}
+            <div class="hour-row">
+                <span>{{ day }}</span>
+                <input type="text" name="hours_{{ day|lower }}" 
+                        value="{{ op_hours.get(day|lower, '') }}" 
+                        placeholder="e.g. 7AM - 5PM">
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="input-group" style="margin-top: 1rem;">
+          <label>Amenities (Comma separated)</label>
+          <input type="text" name="amenities" 
+                 value="{{ current_user.user_doc.get('amenities', [])|join(', ') }}" 
+                 placeholder="Free Wi-Fi, Pet Friendly, Outdoor Seating">
+          <span class="input-hint">Matching your cafe page tags.</span>
+        </div>
+
+        <div class="input-group">
+          <label>Popular Items (Comma separated)</label>
+          <input type="text" name="popular" 
+                 value="{{ current_user.user_doc.get('popular', [])|join(', ') }}" 
+                 placeholder="Oat Milk Latte, Avocado Toast">
         </div>
 
       </div>
@@ -50,5 +77,5 @@
       
       <button type="submit" class="btn-save">Save Changes</button>
     </form>
-
+</div>
 {% endblock %}
