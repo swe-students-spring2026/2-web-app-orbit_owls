@@ -1419,3 +1419,37 @@ a.active {
 .login-link:hover {
   text-decoration: underline;
 }
+
+.photo-card {
+  position: relative;
+  display: inline-block;
+}
+
+.photo-card img {
+  width: 100%;
+  border-radius: 12px;
+}
+
+.delete-form {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+}
+
+.delete-btn {
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 26px;
+  padding: 0;
+  display: none;
+}
+
+.photo-card:hover .delete-btn {
+  display: block;
+}

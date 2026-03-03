@@ -24,6 +24,22 @@ cafes_col   = db["cafes"]
 saved_col   = db["saved_places"]
 reviews_col = db["reviews"]
 
+#Helper to update ratings
+def update_cafe_rating(cafe_id):
+    reviews=list(reviews_col.find({"cafe_id": cafe_id}))
+
+    if not reviews:
+        cafes_col.update_one(
+            {"_id": cafe_id},
+            {"$set": {"rating": 0}}
+        )
+        return
+    total= sum(r["rating"] for r in reviews)
+    average= round(total / len(reviews), 1)
+    cafes_col.update_one(
+        {"_id": cafe_id},
+        {"$set": {"rating": average}}
+    )
 # set up flask-login
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -263,6 +279,7 @@ def cafe_detail(cafe_id):
     if not cafe:
         flash("Cafe not found.", "error")
         return redirect(url_for("home"))
+        
     reviews= list(reviews_col.find({"cafe_id": cafe["_id"]}))
 
     for r in reviews:
@@ -315,8 +332,7 @@ def add_review(cafe_id):
         "text": text,
         "created_at": datetime.datetime.utcnow()
     })
-
-    flash("Review posted!", "success")
+    update_cafe_rating(cafe_obj_id)
     return redirect(url_for("cafe_detail", cafe_id=cafe_id))
 
 #Deleting reviews 
@@ -340,7 +356,7 @@ def delete_review(review_id):
         return redirect(url_for("cafe_detail", cafe_id=str(review["cafe_id"])))
 
     reviews_col.delete_one({"_id":rid})
-    flash("Review deleted.", "success")
+    update_cafe_rating(review["cafe_id"])
     return redirect(url_for("cafe_detail", cafe_id=str(review["cafe_id"])))
 
 #Edit reviews 
@@ -384,9 +400,69 @@ def edit_review(review_id):
         {"_id": rid},
         {"$set": {"rating": rating, "text": text}}
     )
-
-    flash("Review updated.", "success")
+    update_cafe_rating(review["cafe_id"])
     return redirect(url_for("cafe_detail", cafe_id=str(review["cafe_id"])))
+
+#Add photos
+@app.route("/cafe/<cafe_id>/photo_url", methods=["POST"])
+@login_required
+def add_photo_url(cafe_id):
+    try:
+        cafe_obj_id= ObjectId(cafe_id)
+    except Exception:
+        flash("Invalid cafe link.", "error")
+        return redirect(url_for("home"))
+    # read & validate input
+    photo_url= (request.form.get("photo_url") or "").strip()
+    if not photo_url:
+        flash("Please paste a photo_url URL.", "error")
+        return redirect(url_for("cafe_detail", cafe_id=cafe_id))
+
+    if not (photo_url.startswith("http://") or photo_url.startswith("https://")):
+        flash("photo_url URL must start with http:// or https://", "error")
+        return redirect(url_for("cafe_detail", cafe_id=cafe_id))
+
+    photo_doc= {
+        "_id": ObjectId(),
+        "url": photo_url,
+        "user_id": ObjectId(current_user.get_id()),
+        "created_at": datetime.datetime.utcnow()
+    }
+    cafes_col.update_one(
+        {"_id": cafe_obj_id},
+        {"$push": {"photos": photo_doc}}
+    )
+
+    return redirect(url_for("cafe_detail", cafe_id=cafe_id))
+
+@app.route("/cafe/<cafe_id>/photo/<photo_id>/delete", methods=["POST"])
+@login_required
+def delete_photo(cafe_id, photo_id):
+    try:
+        cafe_obj_id = ObjectId(cafe_id)
+        photo_obj_id = ObjectId(photo_id)
+    except Exception:
+        flash("Invalid link.", "error")
+        return redirect(url_for("home"))
+
+    cafe= cafes_col.find_one({"_id": cafe_obj_id})
+    # find the photo inside the array
+    photo = None
+    for p in cafe.get("photos", []):
+    # object style photo
+        if isinstance(p, dict) and str(p.get("_id")) == str(photo_obj_id):
+            photo= p
+            break
+    # permission check
+    if str(photo.get("user_id")) != str(current_user.get_id()):
+        flash("You can only delete photos you uploaded.", "error")
+        return redirect(url_for("cafe_detail", cafe_id=cafe_id))
+    # remove it
+    cafes_col.update_one(
+        {"_id": cafe_obj_id},
+        {"$pull": {"photos": {"_id": photo_obj_id}}}
+    )
+    return redirect(url_for("cafe_detail", cafe_id=cafe_id))
 
 
 @app.route("/settings")

@@ -1,14 +1,9 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Café Details</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-  </head>
+{% extends "base.html" %}
 
-  <body>
-    <main class="settings-container">
+{% block title %}{{ cafe.name }} • Sips{% endblock %}
+
+{% block content %}
+
       <section class="hero">
         <img
         src="{{ cafe.photos[0] if cafe.photos and cafe.photos|length > 0 else url_for('static', filename='images/coffee.jpg') }}"
@@ -29,32 +24,72 @@
             <span class="badge">{{cafe.hours}}</span>
           </div>
 
-          <div class="btn-row">
-            <button class="primary-btn" type="button">Directions</button>
-            <button class="secondary-btn" type="button">Save Café</button>
-          </div>
+          
+            <button type="submit" class="primary-btn" style="margin-top: 0.75rem;">
+              Save Café
+            </button>
+          
         </div>
       </section>
 
       <section class="result-card">
         <div class="section-title">Photos</div>
+      
         <div class="gallery">
-         {% for url in cafe.photos %}
-         <img src="{{url}}"
-         alt ="Cafe photo {{loop.index}}"
-         />
-         {% else %}
-         <p class="muted"> No photos yet.</p>
-         {% endfor %}
+          {% for p in cafe.photos[1:] %}
+            {% if p is string %}
+              <div class="photo-card">
+                <img src="{{ p }}" alt="Cafe photo {{ loop.index }}" />
+        
+                <form method="POST"
+                      action="{{ url_for('delete_photo_url', cafe_id=cafe._id) }}"
+                      class="delete-form">
+                  <input type="hidden" name="photo_url" value="{{ p }}">
+                  <button type="submit" class="delete-btn">×</button>
+                </form>
+              </div>
+            {% else %}
+              <div class="photo-card">
+                <img src="{{ p.url }}" alt="Cafe photo {{ loop.index }}" />
+        
+                {% if p.user_id|string== current_user_id %}
+                  <form method="POST"
+                        action="{{ url_for('delete_photo', cafe_id=cafe._id, photo_id=p._id) }}"
+                        class="delete-form">
+                    <button type="submit" class="delete-btn">×</button>
+                  </form>
+                {% endif %}
+              </div>
+            {% endif %}
+          {% endfor %}
         </div>
-        <button class="secondary-btn" type="button" style="margin-top: 0.85rem;">
-          Upload a photo
-        </button>
+      
+        <details style="margin-top: 0.85rem;">
+          <summary class="secondary-btn" style="cursor:pointer; list-style:none;">
+            Upload a photo
+          </summary>
+      
+          <form method="POST"
+                action="{{ url_for('add_photo_url', cafe_id=cafe._id) }}"
+                style="margin-top: 0.75rem;">
+            <label class="label">Photo URL</label>
+            <input
+              class="input-field"
+              type="url"
+              name="photo_url"
+              placeholder="https://example.com/photo.jpg"
+              required
+            />
+            <button type="submit" class="primary-btn" style="margin-top: 0.75rem;">
+              Add photo
+            </button>
+          </form>
+        </details>
+      
         <p class="muted" style="margin-top: 0.5rem;">
-          (Customer Features) Upload café photos to show atmosphere/interior.
+          Upload café photos to show atmosphere/interior.
         </p>
       </section>
-
       <section class="result-card">
         <div class="section-title">Café info</div>
         <div class="info-grid">
@@ -230,22 +265,5 @@
     {% endfor %}
 
     {% if current_user.is_authenticated and request.endpoint != 'index' %}
-    <nav class="bottom-nav">
-        <ul>
-            <li>
-                <a href="{{ url_for('home') }}" class="{{ 'active' if request.endpoint == 'home' }}">Home</a>
-            </li>
-            <li>
-                <a href="{{ url_for('search') }}" class="{{ 'active' if request.endpoint == 'search' }}">Search</a>
-            </li>
-            <li>
-                <a href="{{ url_for('saved_places') }}" class="{{ 'active' if request.endpoint == 'saved_places' }}">Saved</a>
-            </li>
-            <li>
-                <a href="{{ url_for('settings') }}" class="{{ 'active' if request.endpoint == 'settings' }}">Settings</a>
-            </li>
-        </ul>
-    </nav>
     {% endif %}
-  </body>
-</html>
+    {% endblock %}
