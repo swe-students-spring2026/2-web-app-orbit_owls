@@ -48,7 +48,7 @@
         <div class="input-group">
           <label>Google Maps Embed Link</label>
           <input type="text" name="map_src" 
-                 value="{{ user_data.get('map_src', '') }}" 
+                 value="{{ current_user.user_doc.get('map_src', '') }}" 
                  placeholder="Paste the src URL from Google Maps Embed code here">
           <small>Go to Google Maps -> Share -> Embed a map -> Copy only the <b>src</b> attribute URL.</small>
         </div>

@@ -567,7 +567,7 @@ def profile():
             cafe_update = {
                 "name": request.form.get("cafe_name"),
                 "address": request.form.get("shop_location"),
-                "map_src": request.form.get("map_scr"),
+                "map_src": request.form.get("map_src"),
                 "hours": op_hours,
                 "amenities": amenities_list,
                 "popular": popular_list
@@ -576,7 +576,7 @@ def profile():
             user_update = {
                 "cafe_name": request.form.get("cafe_name"),
                 "shop_location": request.form.get("shop_location"),
-                "map_src": request.form.get("map_scr"),
+                "map_src": request.form.get("map_src"),
                 "operation_hours": op_hours,
                 "amenities": amenities_list,
                 "popular": popular_list
