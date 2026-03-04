@@ -185,7 +185,26 @@ def select_role():
                 {"_id": ObjectId(current_user.get_id())}, 
                 {"$set": {"role": role}}
             )
+            if role == "owner":
+            
+                existing_cafe = cafes_col.find_one({"owner_id": ObjectId(current_user.get_id())})
+                if not existing_cafe:
+                    new_cafe = {
+                        "owner_id": ObjectId(current_user.get_id()), 
+                        "name": "My New Cafe", 
+                        "address": "Please update your address",
+                        "price_range": "$$",
+                        "operation_hours": {day: "Closed" for day in ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']},
+                        "amenities": [],
+                        "popular": [],
+                        "photos": [],
+                        "created_at": datetime.datetime.utcnow()
+                    }
+                    cafes_col.insert_one(new_cafe)
             flash(f"Account set up as {role.capitalize()}!", "success")
+
+            if role == "owner":
+                return redirect(url_for("profile"))
             return redirect(url_for("home"))
 
     return render_template("select_role.html")
@@ -619,15 +638,33 @@ def profile():
             amenities_list = [item.strip() for item in amenities_raw.split(",") if item.strip()]
             popular_list = [item.strip() for item in popular_raw.split(",") if item.strip()]
 
-            update_fields.update({
+            cafe_update = {
+                "name": request.form.get("cafe_name"),
+                "address": request.form.get("shop_location"),
+                "map_src": request.form.get("map_src"),
+                "hours": op_hours,
+                "amenities": amenities_list,
+                "popular": popular_list
+            }
+
+            user_update = {
                 "cafe_name": request.form.get("cafe_name"),
                 "shop_location": request.form.get("shop_location"),
+                "map_src": request.form.get("map_src"),
                 "operation_hours": op_hours,
                 "amenities": amenities_list,
                 "popular": popular_list
-            })
-            
-        # update database
+            }
+            # update database
+            users_col.update_one(
+                {"_id": ObjectId(current_user.get_id())},
+                {"$set": user_update}
+            )
+
+            cafes_col.update_one(
+                {"owner_id": ObjectId(current_user.get_id())},
+                {"$set": cafe_update}
+            )
         users_col.update_one(
             {"_id": ObjectId(current_user.get_id())},
             {"$set": update_fields}

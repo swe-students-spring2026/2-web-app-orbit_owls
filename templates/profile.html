@@ -41,8 +41,16 @@
 
         <div class="input-group">
             <label for="shop-location">Cafe Location</label>
-            <input type="text" id="shop-location" name="shop_location" value="{{ current_user.user_doc.get('shop_location', '') }}" placeholder="e.g. 123 Espresso St, Soho, NY">
-            <span class="input-hint">This will be shown on your cafe's Sips page.</span>
+            <input type="text" id="shop-location" name="shop_location" value="{{ current_user.user_doc.get('shop_location', '') }}" placeholder="e.g. 123 Espresso St, Soho, NY, 10013">
+            <span class="input-hint">Please include the zip code in the end</span>
+        </div>
+
+        <div class="input-group">
+          <label>Google Maps Embed Link</label>
+          <input type="text" name="map_src" 
+                 value="{{ current_user.user_doc.get('map_src', '') }}" 
+                 placeholder="Paste the src URL from Google Maps Embed code here">
+          <small>Go to Google Maps -> Share -> Embed a map -> Copy only the <b>src</b> attribute URL.</small>
         </div>
 
         <label class="label">Operation Hours (Weekly)</label>
