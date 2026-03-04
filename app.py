@@ -391,7 +391,10 @@ def delete_review(review_id):
 
     reviews_col.delete_one({"_id":rid})
     update_cafe_rating(review["cafe_id"])
-    return redirect(url_for("cafe_detail", cafe_id=str(review["cafe_id"])))
+    flash("Review deleted successfully.", "success")
+    # takes user back to their previous screen(my reviews) or the cafe screen
+    next_url = request.referrer or url_for("cafe_detail", cafe_id=str(review["cafe_id"]))
+    return redirect(next_url)
 
 #Edit reviews 
 @app.route("/review/<review_id>/edit", methods=["POST"])
@@ -435,7 +438,10 @@ def edit_review(review_id):
         {"$set": {"rating": rating, "text": text}}
     )
     update_cafe_rating(review["cafe_id"])
-    return redirect(url_for("cafe_detail", cafe_id=str(review["cafe_id"])))
+    flash("Review updated successfully.", "success")
+    # takes user back to their previous screen(my reviews) or the cafe screen
+    next_url = request.referrer or url_for("cafe_detail", cafe_id=str(review["cafe_id"]))
+    return redirect(next_url)
 
 #Add photos
 @app.route("/cafe/<cafe_id>/photo_url", methods=["POST"])
@@ -531,6 +537,34 @@ def add_checkin(cafe_id):
 def settings():
     return render_template("settings.html")
 
+
+@app.route("/my_reviews")
+@login_required
+def my_reviews():
+    user_id = ObjectId(current_user.get_id())
+
+    # Fetch all reviews by this user, sorted newest first
+    reviews = list(reviews_col.find({"user_id": user_id}).sort("created_at", -1))
+
+    # Add extra info for the template
+    for r in reviews:
+        # Convert ObjectIds to strings for template
+        r["_id_str"] = str(r["_id"])
+        r["user_id_str"] = str(r["user_id"])
+
+        # Add cafe name for display
+        cafe = cafes_col.find_one({"_id": r["cafe_id"]})
+        r["cafe_name"] = cafe.get("name") if cafe else "Unknown Cafe"
+
+        # Ensure created_at is datetime
+        if "created_at" not in r or not isinstance(r["created_at"], datetime.datetime):
+            r["created_at"] = None
+
+    return render_template(
+        "my-reviews.html",
+        reviews=reviews,
+        current_user_id=str(user_id)
+    )
 
 @app.route("/profile", methods=["GET", "POST"])
 @login_required
