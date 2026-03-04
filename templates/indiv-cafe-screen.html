@@ -133,60 +133,40 @@
         <p class="muted" style="margin-bottom: 0.75rem;">
           How busy the café gets based on recent check ins.
         </p>
+        <form method="POST" action="{{ url_for('add_checkin', cafe_id=cafe._id) }}" style="margin-bottom: 0.75rem;">
+          <label class="label">Check in time (NY)</label>
+          <select class="input-field" name="hour" required>
+            <option value="8">8am</option>
+            <option value="10">10am</option>
+            <option value="12">12pm</option>
+            <option value="15">3pm</option>
+            <option value="18">6pm</option>
+          </select>
+          <button class="primary-btn" type="submit" style="margin-top:0.5rem;">Check in</button>
+        </form>
 
         <div class="busy">
-          <div class="busy-row" style="--w: 25%;">
-            <div class="time">8am</div>
-            <div class="bar"><span></span></div>
-            <div class="level">Low</div>
-          </div>
-          <div class="busy-row" style="--w: 60%;">
-            <div class="time">10am</div>
-            <div class="bar"><span></span></div>
-            <div class="level">Med</div>
-          </div>
-          <div class="busy-row" style="--w: 85%;">
-            <div class="time">12pm</div>
-            <div class="bar"><span></span></div>
-            <div class="level">High</div>
-          </div>
-          <div class="busy-row" style="--w: 55%;">
-            <div class="time">3pm</div>
-            <div class="bar"><span></span></div>
-            <div class="level">Med</div>
-          </div>
-          <div class="busy-row" style="--w: 30%;">
-            <div class="time">6pm</div>
-            <div class="bar"><span></span></div>
-            <div class="level">Low</div>
-          </div>
-        </div>
-      </section>
-
-      <section class="result-card">
-        <div class="section-title">Near landmarks</div>
-      
-        <div class="landmarks">
-          <div class="landmark-item">
-            <div>
-              <div class="landmark-name">Times Square</div>
-              <div class="landmark-meta">0.6 mi • ~12 min walk</div>
+          {% for p in peak_times %}
+            {% set pct = (p.count / max_count * 100) if max_count > 0 else 0 %}
+            <div class="busy-row" style="--w: {{ pct }}%;">
+              <div class="time">
+                {% if p.hour == 0 %}12am
+                {% elif p.hour < 12 %}{{ p.hour }}am
+                {% elif p.hour == 12 %}12pm
+                {% else %}{{ p.hour - 12 }}pm
+                {% endif %}
+              </div>
+        
+              <div class="bar"><span></span></div>
+        
+              <div class="level">
+                {% if pct < 35 %}Low
+                {% elif pct < 70 %}Med
+                {% else %}High
+                {% endif %}
+              </div>
             </div>
-          </div>
-      
-          <div class="landmark-item">
-            <div>
-              <div class="landmark-name">Bryant Park</div>
-              <div class="landmark-meta">0.8 mi • ~16 min walk</div>
-            </div>
-          </div>
-      
-          <div class="landmark-item">
-            <div>
-              <div class="landmark-name">Rockefeller Center</div>
-              <div class="landmark-meta">1.1 mi • ~22 min walk</div>
-            </div>
-          </div>
+          {% endfor %}
         </div>
       </section>
       
