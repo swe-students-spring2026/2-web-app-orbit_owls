@@ -46,7 +46,7 @@
                 <img src="{{ p }}" alt="Cafe photo {{ loop.index }}" />
         
                 <form method="POST"
-                      action="{{ url_for('delete_photo_url', cafe_id=cafe._id) }}"
+                      action="{{ url_for('delete_photo', cafe_id=cafe._id, photo_id=p._id) }}"
                       class="delete-form">
                   <input type="hidden" name="photo_url" value="{{ p }}">
                   <button type="submit" class="delete-btn">×</button>
