@@ -45,10 +45,18 @@ def update_cafe_rating(cafe_id):
         {"$set": {"rating": average}}
     )
 #Helper function to extract times 
-def hours_list_from_range(hours_str):
-    parts= re.split(r"\s*[–—-]\s*",hours_str.strip())
-    if len(parts) != 2:
-        return [8, 10, 12, 15, 18]
+def hours_list_from_range(hours_value):
+    if isinstance(hours_value, dict):
+        ny_tz= ZoneInfo("America/New_York")
+        today_key= datetime.datetime.now(ny_tz).strftime("%a").lower() 
+        hours_str= (hours_value.get(today_key) or "").strip()
+    else:
+        hours_str=(hours_value or "").strip()
+
+    if not hours_str or "closed" in hours_str.lower():
+        return []
+    parts= re.split(r"\s*[–—-]\s*", hours_str)
+    
     def parse_time(t):
         m= re.search(r"(\d{1,2})(?::(\d{2}))?\s*(AM|PM)", t, re.I)
         if not m:
@@ -60,7 +68,6 @@ def hours_list_from_range(hours_str):
         if ampm== "AM" and h== 12:
             h= 0
         return h
-
     start= parse_time(parts[0])
     end= parse_time(parts[1])
     return list(range(start, end + 1))
@@ -341,6 +348,15 @@ def cafe_detail(cafe_id):
     }))
     ny_tz= ZoneInfo("America/New_York")
     utc_tz= ZoneInfo("UTC")
+    today_key = datetime.datetime.now(ny_tz).strftime("%a").lower()  # mon/tue/...
+    #Formatting
+    hours_val= cafe.get("hours", "")
+    if isinstance(hours_val, dict):
+        today_hours= (hours_val.get(today_key) or "").strip()
+    else:
+        today_hours= (hours_val or "").strip()
+    if not today_hours:
+        today_hours= "Not listed"
     hour_counts= {}
     #Convert to NY
     for c in checkins:
@@ -366,7 +382,8 @@ def cafe_detail(cafe_id):
         current_user_id=current_user_id,
         peak_times=peak_times,
         max_count=max_count,
-        hours=hours
+        hours=hours,
+        today_hours=today_hours
     )
 
 #Posting reviews

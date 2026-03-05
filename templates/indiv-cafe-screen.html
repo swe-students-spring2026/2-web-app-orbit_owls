@@ -21,7 +21,7 @@
           <div class="badge-row">
             <span class="badge">{{reviews|length}} reviews</span>
             <span class="badge">{{cafe.price_range}}</span>
-            <span class="badge">{{cafe.hours}}</span>
+            <span class="badge"><p class="muted">Today's hours: {{ today_hours }}</p></span>
           </div>
 
           
@@ -99,7 +99,7 @@
           </div>
           <div class="info-row">
             <div class="label">Hours</div>
-            <div class="value">{{cafe.hours}}</div>
+            <div class="value"><p class="muted">Today's hours: {{ today_hours }}</p></div>
           </div>
           <div class="info-row">
             <div class="label">Address</div>
@@ -133,45 +133,50 @@
         <p class="muted" style="margin-bottom: 0.75rem;">
           How busy the café gets based on recent check ins.
         </p>
-        <form method="POST" action="{{ url_for('add_checkin', cafe_id=cafe._id) }}" style="margin-bottom: 0.75rem;">
-          <label class="label">Check in time (NY)</label>
-          <select class="input-field" name="hour" required>
-            {% for h in hours %}
-              <option value="{{ h }}">
-                {% if h== 0 %}12am
-                {% elif h < 12 %}{{ h }}am
-                {% elif h== 12 %}12pm
-                {% else %}{{ h-12 }}pm
-                {% endif %}
-              </option>
+        <section class="result-card">
+          <div class="section-title">Peak Times</div>
+          <p class="muted" style="margin-bottom: 0.75rem;">
+            How busy the café gets based on recent check ins.
+          </p>
+          <form method="POST" action="{{ url_for('add_checkin', cafe_id=cafe._id) }}" style="margin-bottom: 0.75rem;">
+            <label class="label">Check in time (NY)</label>
+            <select class="input-field" name="hour" required>
+              {% for h in hours %}
+                <option value="{{ h }}">
+                  {% if h== 0 %}12am
+                  {% elif h < 12 %}{{ h }}am
+                  {% elif h== 12 %}12pm
+                  {% else %}{{ h-12 }}pm
+                  {% endif %}
+                </option>
+              {% endfor %}
+            </select>
+            <button class="primary-btn" type="submit" style="margin-top:0.5rem;">Check in</button>
+          </form>
+        
+  
+          <div class="busy">
+            {% for p in peak_times %}
+              {% set pct = (p.count / max_count * 100) if max_count > 0 else 0 %}
+              <div class="busy-row" style="--w: {{ pct }}%;">
+                <div class="time">
+                  {% if p.hour == 0 %}12am
+                  {% elif p.hour < 12 %}{{ p.hour }}am
+                  {% elif p.hour == 12 %}12pm
+                  {% else %}{{ p.hour - 12 }}pm
+                  {% endif %}
+                </div>
+                <div class="bar"><span></span></div>
+                <div class="level">
+                  {% if pct < 35 %}Low
+                  {% elif pct < 70 %}Med
+                  {% else %}High
+                  {% endif %}
+                </div>
+              </div>
             {% endfor %}
-          </select>
-          <button class="primary-btn" type="submit" style="margin-top:0.5rem;">Check in</button>
-        </form>
-
-        <div class="busy">
-          {% for p in peak_times %}
-            {% set pct = (p.count / max_count * 100) if max_count > 0 else 0 %}
-            <div class="busy-row" style="--w: {{ pct }}%;">
-              <div class="time">
-                {% if p.hour == 0 %}12am
-                {% elif p.hour < 12 %}{{ p.hour }}am
-                {% elif p.hour == 12 %}12pm
-                {% else %}{{ p.hour - 12 }}pm
-                {% endif %}
-              </div>
-              <div class="bar"><span></span></div>
-              <div class="level">
-                {% if pct < 35 %}Low
-                {% elif pct < 70 %}Med
-                {% else %}High
-                {% endif %}
-              </div>
-            </div>
-          {% endfor %}
-        </div>
-      </section>
-      
+          </div>
+        </section>
       <section class="result-card">
         <form method="POST"
         action="{{ url_for('add_review', cafe_id=cafe._id) }}"
