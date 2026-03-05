@@ -61,7 +61,7 @@ def hours_list_from_range(hours_value):
         m= re.search(r"(\d{1,2})(?::(\d{2}))?\s*(AM|PM)", t, re.I)
         if not m:
             return None
-        h= int(m.group(1))
+        h=int(m.group(1))
         ampm= m.group(3).upper()
         if ampm== "PM" and h!= 12:
             h+= 12
