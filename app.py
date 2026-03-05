@@ -533,15 +533,15 @@ def add_photo_url(cafe_id):
         flash("photo_url URL must start with http:// or https://", "error")
         return redirect(url_for("cafe_detail", cafe_id=cafe_id))
 
-    photo_doc= {
-        "_id": ObjectId(),
-        "url": photo_url,
-        "user_id": ObjectId(current_user.get_id()),
-        "created_at": datetime.datetime.utcnow()
-    }
+    # photo_doc= {
+    #     "_id": ObjectId(),
+    #     "url": photo_url,
+    #     "user_id": ObjectId(current_user.get_id()),
+    #     "created_at": datetime.datetime.utcnow()
+    # }
     cafes_col.update_one(
         {"_id": cafe_obj_id},
-        {"$push": {"photos": photo_doc}}
+        {"$push": {"photos": photo_url}}
     )
 
     return redirect(url_for("cafe_detail", cafe_id=cafe_id))
