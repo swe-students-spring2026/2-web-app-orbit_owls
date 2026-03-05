@@ -194,7 +194,7 @@ def select_role():
                         "name": "My New Cafe", 
                         "address": "Please update your address",
                         "price_range": "$$",
-                        "operation_hours": {day: "Closed" for day in ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']},
+                        "hours": {day: "Closed" for day in ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']},
                         "amenities": [],
                         "popular": [],
                         "photos": [],
