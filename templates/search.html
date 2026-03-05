@@ -41,21 +41,21 @@
 
 
   <div class="search-results">
-    {% if cafes %} {% for cafe in cafes %}
-    <div class="result-card">
-      <div class="result-title">{{ cafe.name }}</div>
-      <div class="result-meta">
-        {% if cafe.hours is mapping %}
-          {{ cafe.hours.get(today_weekday, 'Closed') }}
-        {% else %}
-          {{ cafe.hours }}
-        {% endif %}
-        • Rating: {{ cafe.rating }} • Price: {{cafe.price_range}}
-      </div>
+   {% for cafe in cafes %}
+<a href="{{ url_for('cafe_detail', cafe_id=cafe._id) }}" class="result-link">
+  <div class="result-card">
+    <div class="result-title">{{ cafe.name }}</div>
+    <div class="result-meta">
+      {% if cafe.hours is mapping %}
+        {{ cafe.hours.get(today_weekday, 'Closed') }}
+      {% else %}
+        {{ cafe.hours }}
+      {% endif %}
+      • Rating: {{ cafe.rating }} • Price: {{ cafe.price_range }}
     </div>
-    {% endfor %} {% elif request.args.get('q') %}
-    <p>No cafes found.</p>
-    {% endif %}
+  </div>
+</a>
+{% endfor %}
   </div>
 </div>
 
