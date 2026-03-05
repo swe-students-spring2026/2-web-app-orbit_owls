@@ -738,6 +738,7 @@ def save_cafe(cafe_id):
 
     cafe_name    = cafe["name"]                 if cafe else "Unknown Cafe"
     neighborhood = cafe.get("neighborhood", "") if cafe else ""
+    address      = cafe.get("address", "")      if cafe else ""
     hours        = cafe.get("hours", "")        if cafe else ""
 
     saved_col.insert_one({
@@ -745,6 +746,7 @@ def save_cafe(cafe_id):
         "cafe_id":      cafe_id,
         "cafe_name":    cafe_name,
         "neighborhood": neighborhood,
+        "address":      address,
         "hours":        hours,
         "saved_at":     datetime.datetime.utcnow(),
     })

@@ -20,20 +20,18 @@
 {% if saved %}
   {% for place in saved %}
   <div class="card">
-    <a href="{{ url_for('cafe_detail', cafe_id=place.cafe_id) }}" class="card-link">
+     <a href="{{ url_for('cafe_detail', cafe_id=place.cafe_id) }}" class="card-link">
       <div class="result-title">{{ place.cafe_name }}</div>
-      {% if place.neighborhood %}
-        <div class="result-meta">{{ place.neighborhood }}</div>
-      {% endif %}
-      {% if place.hours %}
-        <div class="result-meta">
+      <div class="result-meta">
+        {% if place.hours %}
           {% if place.hours is mapping %}
-            {{ place.hours.values() | list | join(' · ') }}
+            {{ place.hours.values() | list | first }}
           {% else %}
             {{ place.hours }}
           {% endif %}
-        </div>
-      {% endif %}
+        {% endif %}
+        {% if place.address %} • {{ place.address }}{% endif %}
+      </div>
     </a>
     <form method="POST" action="{{ url_for('unsave_cafe', place_id=place._id) }}">
       <button type="submit" class="secondary-btn">Remove</button>
