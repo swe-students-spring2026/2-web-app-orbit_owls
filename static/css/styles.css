@@ -6,7 +6,7 @@
 }
 
 body {
-  padding-bottom: 70px;
+  padding-bottom: 120px;
   background: #f8f9fb;
   color: #222;
 }
@@ -127,6 +127,7 @@ a.active {
   width: 90%;
   font-size: 1.25rem;
   font-weight: bold;
+  color: #3e2723;
 }
 
 .map-container {
@@ -159,6 +160,7 @@ a.active {
   width: 90%;
   font-size: 1.25rem;
   font-weight: bold;
+  color: #3e2723;
 }
 
 .recommendations {
@@ -196,8 +198,9 @@ a.active {
 }
 
 .cafe-card:hover {
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 14px rgba(62, 39, 35, 0.15);
   transform: translateY(-2px);
+  background: #f5f0ef;
 }
 
 .cafe-name {
@@ -220,7 +223,7 @@ a.active {
 /* larger screen */
 @media (min-width: 768px) {
   body {
-    padding-bottom: 0;
+    padding-bottom: 120;
   }
 
   ul {
@@ -340,13 +343,14 @@ a.active {
 }
 
 body {
-  padding-bottom: 70px;
+  padding-bottom: 120px;
   background: #f8f9fb;
   color: #222;
 }
 
 h1 {
   padding: 1.5rem 1rem;
+  color: #3e2723;
 }
 
 ul {
@@ -426,7 +430,7 @@ a.active {
 
 @media (min-width: 768px) {
   body {
-    padding-bottom: 0;
+    padding-bottom: 120;
   }
 
   ul {
@@ -800,7 +804,7 @@ a.active {
 }
 
 body {
-  padding-bottom: 70px;
+  padding-bottom: 120px;
   background: #f8f9fb;
   color: #222;
 }
@@ -889,7 +893,7 @@ a.active {
 
 @media (min-width: 768px) {
   body {
-    padding-bottom: 0;
+    padding-bottom: 120px;
   }
 
   ul {
@@ -1601,7 +1605,7 @@ h2 {
 
 .cafe-card--active {
   border-color: #3e2723;
-  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.25);
+  box-shadow: 0 0 0 2px rgba(62, 39, 35, 0.25);
 }
 
 .profile-container {
