@@ -9,8 +9,21 @@ from flask import Flask, flash, redirect, render_template, request, url_for
 from flask_login import LoginManager, UserMixin, current_user, login_required, login_user, logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
 from pymongo import ASCENDING,DESCENDING
-from zoneinfo import ZoneInfo
 from datetime import timedelta
+try:
+    from zoneinfo import ZoneInfo
+    ZoneInfo("America/New_York")
+except Exception:
+    try:
+        import importlib
+        importlib.import_module("tzdata")
+        from zoneinfo import ZoneInfo
+    except Exception:
+        from datetime import timezone as _tz
+        class ZoneInfo:
+            _map = {"America/New_York": _tz(timedelta(hours=-5)), "UTC": _tz.utc}
+            def __init__(self, key):
+                self._offset = self._map.get(key, _tz.utc)
 
 # load .env file and create the app
 load_dotenv()
@@ -694,7 +707,63 @@ def profile():
 @app.route("/saved")
 @login_required
 def saved_places():
-    return render_template("saved_places.html")
+    user_id = current_user.get_id()
+    query = request.args.get("q", "").strip()
+
+    db_filter = {"user_id": user_id}
+    if query:
+        db_filter["cafe_name"] = {"$regex": query, "$options": "i"}
+
+    saved = list(saved_col.find(db_filter).sort("saved_at", pymongo.DESCENDING))
+    for place in saved:
+        place["_id"] = str(place["_id"])
+
+    return render_template("saved_places.html", saved=saved, query=query)
+
+
+@app.route("/saved/add/<cafe_id>", methods=["POST"])
+@login_required
+def save_cafe(cafe_id):
+    user_id = current_user.get_id()
+
+    if saved_col.find_one({"user_id": user_id, "cafe_id": cafe_id}):
+        flash("Cafe is already in your saved places.", "info")
+        return redirect(request.referrer or url_for("saved_places"))
+
+    try:
+        cafe = cafes_col.find_one({"_id": ObjectId(cafe_id)})
+    except Exception:
+        flash("Invalid cafe.", "error")
+        return redirect(request.referrer or url_for("home"))
+
+    cafe_name    = cafe["name"]                 if cafe else "Unknown Cafe"
+    neighborhood = cafe.get("neighborhood", "") if cafe else ""
+    hours        = cafe.get("hours", "")        if cafe else ""
+
+    saved_col.insert_one({
+        "user_id":      user_id,
+        "cafe_id":      cafe_id,
+        "cafe_name":    cafe_name,
+        "neighborhood": neighborhood,
+        "hours":        hours,
+        "saved_at":     datetime.datetime.utcnow(),
+    })
+
+    flash(f"{cafe_name} added to saved places!", "success")
+    return redirect(request.referrer or url_for("saved_places"))
+
+
+@app.route("/saved/remove/<place_id>", methods=["POST"])
+@login_required
+def unsave_cafe(place_id):
+    user_id = current_user.get_id()
+    result  = saved_col.delete_one({"_id": ObjectId(place_id), "user_id": user_id})
+
+    flash(
+        "Cafe removed from saved places." if result.deleted_count else "Could not remove that cafe.",
+        "success" if result.deleted_count else "error"
+    )
+    return redirect(url_for("saved_places"))
 
 
 # --- Run app ---

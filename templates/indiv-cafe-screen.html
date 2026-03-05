@@ -27,9 +27,11 @@
           </div>
 
           
-            <button type="submit" class="primary-btn" style="margin-top: 0.75rem;">
-              Save Café
-            </button>
+            <form method="POST" action="{{ url_for('save_cafe', cafe_id=cafe._id) }}">
+              <button type="submit" class="primary-btn" style="margin-top: 0.75rem;">
+                Save Café
+              </button>
+            </form>
           
         </div>
       </section>
