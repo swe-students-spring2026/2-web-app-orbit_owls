@@ -29,10 +29,20 @@
             <span class="badge">Open • 7:00 AM – 7:00 PM</span>
           </div>
 
+<<<<<<< Updated upstream
           <div class="btn-row">
             <button class="primary-btn" type="button">Directions</button>
             <button class="secondary-btn" type="button">Save Café</button>
           </div>
+=======
+          
+            <form method="POST" action="{{ url_for('save_cafe', cafe_id=cafe._id) }}">
+              <button type="submit" class="primary-btn" style="margin-top: 0.75rem;">
+                Save Café
+              </button>
+            </form>
+          
+>>>>>>> Stashed changes
         </div>
       </section>
 
@@ -180,6 +190,7 @@
           </div>
         </div>
 
+<<<<<<< Updated upstream
         <div class="result-card" style="margin-top: 0.85rem;">
           <div class="review">
             <div class="review-head">
@@ -231,3 +242,8 @@
     </ul>
   </body>
 </html>
+=======
+    {% if current_user.is_authenticated and request.endpoint != 'index' %}
+    {% endif %}
+    {% endblock %}
+>>>>>>> Stashed changes

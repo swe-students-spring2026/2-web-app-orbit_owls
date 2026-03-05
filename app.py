@@ -7,6 +7,25 @@ from dotenv import load_dotenv
 from flask import Flask, flash, redirect, render_template, request, url_for
 from flask_login import LoginManager, UserMixin, current_user, login_required, login_user, logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
+<<<<<<< Updated upstream
+=======
+from pymongo import ASCENDING,DESCENDING
+from datetime import timedelta
+try:
+    from zoneinfo import ZoneInfo
+    ZoneInfo("America/New_York")
+except Exception:
+    try:
+        import importlib
+        importlib.import_module("tzdata")
+        from zoneinfo import ZoneInfo
+    except Exception:
+        from datetime import timezone as _tz
+        class ZoneInfo:
+            _map = {"America/New_York": _tz(timedelta(hours=-5)), "UTC": _tz.utc}
+            def __init__(self, key):
+                self._offset = self._map.get(key, _tz.utc)
+>>>>>>> Stashed changes
 
 # load .env file and create the app
 load_dotenv()
@@ -288,7 +307,16 @@ def save_cafe(cafe_id):
         flash("Cafe is already in your saved places.", "info")
         return redirect(request.referrer or url_for("saved_places"))
 
+<<<<<<< Updated upstream
     cafe = cafes_col.find_one({"_id": ObjectId(cafe_id)})
+=======
+    try:
+        cafe = cafes_col.find_one({"_id": ObjectId(cafe_id)})
+    except Exception:
+        flash("Invalid cafe.", "error")
+        return redirect(request.referrer or url_for("home"))
+
+>>>>>>> Stashed changes
     cafe_name    = cafe["name"]                 if cafe else "Unknown Cafe"
     neighborhood = cafe.get("neighborhood", "") if cafe else ""
     hours        = cafe.get("hours", "")        if cafe else ""
